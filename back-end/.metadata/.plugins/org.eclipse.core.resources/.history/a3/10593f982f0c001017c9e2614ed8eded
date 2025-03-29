@@ -1,0 +1,63 @@
+package tech.calendar.api.entity;
+
+public class Contact {
+	private int id;
+	private int client_id;
+	private String type;
+	private String value;
+	private String observation;
+	
+	public Contact(int id, int client_id, String type, String value, String observation) {
+		this.id = id;
+		this.client_id = client_id;
+		this.type = type;
+		this.value = value;
+		this.observation = observation;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public int getClientId() {
+		return client_id;
+	}
+	
+	public String getIdForInsert() {
+		return Integer.toString(id);
+	}
+	
+	public String getClientIdForInsert() {
+		return Integer.toString(client_id);
+	}
+	
+	public String getTypeForInsert() {
+		String response = type;
+		if(type != null) response = "\"" + type + "\"";
+		return response;
+	}
+	
+	public String getValueForInsert() {
+		String response = value;
+		if(value != null) response = "\"" + value + "\"";
+		return response;
+	}
+	
+	public String getObservationForInsert() {
+		String response = observation;
+		if(observation != null) response = "\"" + observation + "\"";
+		return response;
+	}
+	
+	public String getType() {
+		return type;
+	}
+	
+	public String getValue() {
+		return value;
+	}
+	
+	public String getObservation() {
+		return observation;
+	}
+}

@@ -1,0 +1,9 @@
+package tech.calendar.api.entity;
+
+public class Inserter {
+	public static String forInsert(String feature) {
+		String response = feature;
+		if(feature != null) response = "\"" + feature + "\"";
+		return response;
+	}
+}

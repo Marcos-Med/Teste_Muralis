@@ -1,0 +1,16 @@
+package tech.calendar.api.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/clientes") //Url base do endpoint
+public class ApiController {
+	
+	@GetMapping
+	public ResponseEntity<String> helloWorld(){
+		return ResponseEntity.ok("Hello World!");
+	}
+}

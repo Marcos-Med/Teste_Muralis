@@ -1,0 +1,5 @@
+package tech.calendar.api.database;
+
+public class Database {
+
+}

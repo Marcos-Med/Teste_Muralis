@@ -1,0 +1,48 @@
+package tech.calendar.api.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
+import tech.calendar.api.database.Database;
+import tech.calendar.api.entity.*;
+
+@RestController
+@RequestMapping("/clientes") //Url base do endpoint
+public class ClientController {
+	
+	private Database database;
+	
+	public ClientController(String user, String key) {
+		database = new Database("jdbc:mysql://localhost:3306/sistema_agenda", user, key);
+	}
+	
+	@GetMapping
+	public List<Client> getListClients(){
+		List<Client> list = new LinkedList<>();
+		String sql = "SELECT * FROM Cliente;";
+		try {
+			Connection conn = database.connect();
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				int id = rs.getInt("id");
+				String name = rs.getString("nome");
+				String cpf = rs.getString("cpf");
+				String date_birth = rs.getString("data_nascimento");
+				String address = rs.getString("endereco");
+				list.add(new Client(id, name, cpf, date_birth, address));
+			}
+		}
+		catch(SQLException e) {
+			list = null;
+		}
+		return list;
+	}
+}

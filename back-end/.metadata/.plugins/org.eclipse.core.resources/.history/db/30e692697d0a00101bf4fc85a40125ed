@@ -1,0 +1,28 @@
+package tech.calendar.api.database;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class Database {
+	private static Database instance;
+	private String url;
+	private String user;
+	private String key;
+	
+	private Database(String user, String key) {
+		url = "jdbc:mysql://localhost:3306/sistema_agenda";
+		this.user = user;
+		this.key = key;
+	}
+	
+	public static Database getInstance(String user, String key) {
+		if(instance == null) instance = new Database(user, key);
+		return instance;
+	}
+	
+	public static Database getInstance() {
+		if(instance == null) throw new IllegalStateException("A instância ainda não foi inicializada. Chame getInstance(params...) primeiro.");
+		return instance;
+	}
+}

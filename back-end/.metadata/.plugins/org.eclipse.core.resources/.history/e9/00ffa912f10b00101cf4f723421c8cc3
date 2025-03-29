@@ -1,0 +1,108 @@
+package tech.calendar.api.controller;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import tech.calendar.api.database.Database;
+import tech.calendar.api.entity.Contact;
+
+@RestController
+@RequestMapping("/contato")
+public class ContactController {
+	private Database database;
+	
+	public ContactController(String user, String key) {
+		database = new Database("jdbc:mysql://localhost:3306/sistema_agenda", user, key);
+	}
+	
+	private ResponseEntity<List<Contact>> getContacts(String sql){
+		List<Contact> list = new LinkedList<>();
+		try(Connection conn = database.connect();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql);){
+			while(rs.next()) {
+				int id = rs.getInt("id");
+				int client_id = rs.getInt("cliente_id");
+				String type = rs.getString("tipo");
+				String value = rs.getString("valor");
+				String observation = rs.getString("observacao");
+				list.add(new Contact(id, client_id, type, value, observation));
+			}
+			return ResponseEntity.ok(list);
+		}
+		catch(SQLException e) {
+			printError(e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+	
+	private void printError(SQLException e) {
+		System.out.println("Falha ao interagir com o banco de dados: " + e.getMessage());
+	}
+	
+	
+	private ResponseEntity<String> executeUpdateSQL(String sql){ 
+		try(Connection conn = database.connect();
+			Statement stmt = conn.createStatement();){
+			int rowsAffected = stmt.executeUpdate(sql);
+			String response;
+			if(rowsAffected > 0) {
+				response = "Operação bem sucedida!";
+				return ResponseEntity.ok(response);
+			}
+			else {
+				response = "Não foi possível realizar a operação.";
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+			}
+		}
+		catch(SQLException e) {
+			printError(e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+	
+	@GetMapping("/{client_id}")
+	public ResponseEntity<List<Contact>> getContactsByClient(@PathVariable int client_id){
+		String sql = "SELECT Contato.id, cliente_id, tipo, valor, observacao FROM " +
+						"Cliente JOIN Contato ON Cliente.id = cliente_id WHERE cliente_id = " +
+							client_id + ";";
+		return getContacts(sql);	
+	}
+	
+	@PostMapping()
+	public ResponseEntity<String> insertContact(@RequestBody Contact contact){
+		String sql = "INSERT INTO Contato (cliente_id, tipo, valor, observacao) VALUES (" +
+						contact.getClientId() + ", " + contact.getType() + ", " + 
+						contact.getValue() + ", " + contact.getObservation() + ");";
+		return executeUpdateSQL(sql);
+	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<String> updateContact(@PathVariable int id, @RequestBody Contact contact){
+		String sql = "UPDATE Contato SET cliente_id = " + contact.getClientId() + ", tipo = " +
+						contact.getType() + ", valor = " + contact.getValue() + ", observacao = " +
+							contact.getObservation() + " WHERE id = " + id + ";";
+		return executeUpdateSQL(sql);
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteContact(@PathVariable int id){
+		String sql = "DELETE FROM Contato WHERE id = " + id + ";";
+		return executeUpdateSQL(sql);
+	}
+}

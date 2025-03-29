@@ -1,0 +1,5 @@
+package tech.calendar.api.controller;
+
+public class ContactController {
+
+}
