@@ -29,7 +29,7 @@ O **Sistema de Agenda** é uma aplicação web que permite o cadastro de cliente
    ```
 2. Acesse a pasta do backend:
    ```bash
-   cd back-end
+   cd back-end/api
    ```
 3. Configure o banco de dados MySQL no arquivo `application.properties`:
    ```properties
