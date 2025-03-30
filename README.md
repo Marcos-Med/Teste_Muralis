@@ -158,5 +158,23 @@ Exclui um contato do sistema, com base no seu ID.
 - Em caso de erro, podem retornar **400 Bad Request** (requisição inválida) ou **500 Internal Server Error** (erro interno no servidor).
 ---
 
+## Estrutura do Projeto
+O projeto Java Spring Boot está organizado nos seguintes pacotes:
+
+### `tech.calendar.api`
+- **`ApiApplication.java`**: Classe principal que inicia a aplicação Spring Boot.
+
+### `tech.calendar.api.controller`
+- **`ClientController.java`**: Controlador que gerencia requisições relacionadas aos clientes.
+- **`ContactController.java`**: Controlador que gerencia requisições relacionadas aos contatos.
+
+### `tech.calendar.api.database`
+- **`Database.java`**: Classe responsável pela conexão do banco de dados.
+
+### `tech.calendar.api.entity`
+- **`Client.java`**: Entidade que representa um cliente no sistema.
+- **`Contact.java`**: Entidade que representa um contato associado a um cliente.
+- **`Inserter.java`**: Classe auxiliar para inserção de dados no banco.
+---
 Desenvolvido por **Marcos** 🚀
 
